@@ -8,6 +8,8 @@ public class BazarLibreriaContext : DbContext
     }
 
     public DbSet<Usuario> Usuario { get; set; }
+    public DbSet<EstadoUsuario> EstadoUsuarios { get; set; }
+    public DbSet<Rol> Roles { get; set; }
     public DbSet<Producto> Productos { get; set; }
     public DbSet<ImagenProducto> ImagenesProductos { get; set; }
     public DbSet<CarritoCompra> CarritoCompras { get; set; }
@@ -75,6 +77,16 @@ public class BazarLibreriaContext : DbContext
             .HasOne(r => r.Usuario)
             .WithMany(u => u.Resenas)
             .HasForeignKey(r => r.CodigoUsuario);
+
+        modelBuilder.Entity<EstadoUsuario>().HasData(
+                new EstadoUsuario { EstadoUsuarioId = 1, Nombre = "Activo" },
+                new EstadoUsuario { EstadoUsuarioId = 2, Nombre = "Inactivo" }
+            );
+
+        modelBuilder.Entity<Rol>().HasData(
+            new Rol { RolId = 1, Nombre = "Administrador" },
+            new Rol { RolId = 2, Nombre = "Usuario" }
+        );
 
         base.OnModelCreating(modelBuilder);
     }

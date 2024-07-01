@@ -11,14 +11,12 @@ namespace Tienda_Bazar.Controllers
 {
     public class AccesoController : Controller
     {
-        //Con esta variable del nuestro contexto es la que se va a utilizar para realizar acciones con la DB
         private readonly BazarLibreriaContext _appDbContext;
-
         private readonly PasswordHasher<Usuario> _passwordHasher;
 
-        public AccesoController(BazarLibreriaContext AppDbContext)
+        public AccesoController(BazarLibreriaContext appDbContext)
         {
-            _appDbContext = AppDbContext;
+            _appDbContext = appDbContext;
             _passwordHasher = new PasswordHasher<Usuario>();
         }
 
@@ -32,6 +30,8 @@ namespace Tienda_Bazar.Controllers
         public async Task<IActionResult> Registro(Usuario usuario)
         {
             usuario.Contrasena = _passwordHasher.HashPassword(usuario, usuario.Contrasena);
+            usuario.EstadoUsuarioId = 1; // Activo por defecto
+            usuario.RolId = 2; // Usuario por defecto
 
             await _appDbContext.Usuario.AddAsync(usuario);
             await _appDbContext.SaveChangesAsync();
@@ -50,8 +50,7 @@ namespace Tienda_Bazar.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            //Esto es por si uno ya esta autenticado y el tiempo de la sesion no ha caducado, entonces no aparecera el login de nuevo:
-            if (User.Identity!.IsAuthenticated) 
+            if (User.Identity!.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -62,11 +61,13 @@ namespace Tienda_Bazar.Controllers
         public async Task<IActionResult> Login(UsuarioVM usuario)
         {
             var usuarioRecibido = await _appDbContext.Usuario
+                .Include(u => u.EstadoUsuario)
+                .Include(u => u.Rol)
                 .FirstOrDefaultAsync(u => u.NombreUsuario == usuario.NombreUsuario);
 
-            if (usuarioRecibido == null)
+            if (usuarioRecibido == null || usuarioRecibido.EstadoUsuario.Nombre != "Activo")
             {
-                ViewData["Mensaje"] = "Error al encontrar el usuario";
+                ViewData["Mensaje"] = "Error al encontrar el usuario o el usuario está inactivo";
                 return View();
             }
 
@@ -81,7 +82,8 @@ namespace Tienda_Bazar.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, usuarioRecibido.CodigoUsuario.ToString()),
-                new Claim(ClaimTypes.Name, usuarioRecibido.NombreUsuario)
+                new Claim(ClaimTypes.Name, usuarioRecibido.NombreUsuario),
+                new Claim(ClaimTypes.Role, usuarioRecibido.Rol.Nombre)
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
