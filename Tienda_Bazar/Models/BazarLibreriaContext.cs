@@ -7,6 +7,7 @@ public class BazarLibreriaContext : DbContext
     {
     }
 
+    public DbSet<Usuario> Usuario { get; set; }
     public DbSet<Producto> Productos { get; set; }
     public DbSet<ImagenProducto> ImagenesProductos { get; set; }
     public DbSet<CarritoCompra> CarritoCompras { get; set; }
