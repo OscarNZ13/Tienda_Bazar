@@ -1,0 +1,101 @@
+﻿using Tienda_Bazar.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Tienda_Bazar.Models.ViewModels;
+using Microsoft.AspNetCore.Identity;
+
+namespace Tienda_Bazar.Controllers
+{
+    public class AccesoController : Controller
+    {
+        //Con esta variable del nuestro contexto es la que se va a utilizar para realizar acciones con la DB
+        private readonly BazarLibreriaContext _appDbContext;
+
+        private readonly PasswordHasher<Usuario> _passwordHasher;
+
+        public AccesoController(BazarLibreriaContext AppDbContext)
+        {
+            _appDbContext = AppDbContext;
+            _passwordHasher = new PasswordHasher<Usuario>();
+        }
+
+        [HttpGet]
+        public IActionResult Registro()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Registro(Usuario usuario)
+        {
+            usuario.Contrasena = _passwordHasher.HashPassword(usuario, usuario.Contrasena);
+
+            await _appDbContext.Usuario.AddAsync(usuario);
+            await _appDbContext.SaveChangesAsync();
+
+            if (usuario.CodigoUsuario != 0)
+            {
+                return RedirectToAction("Login", "Acceso");
+            }
+            else
+            {
+                ViewData["Mensaje"] = "No se pudo crear el usuario";
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            //Esto es por si uno ya esta autenticado y el tiempo de la sesion no ha caducado, entonces no aparecera el login de nuevo:
+            if (User.Identity!.IsAuthenticated) 
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(UsuarioVM usuario)
+        {
+            var usuarioRecibido = await _appDbContext.Usuario
+                .FirstOrDefaultAsync(u => u.NombreUsuario == usuario.NombreUsuario);
+
+            if (usuarioRecibido == null)
+            {
+                ViewData["Mensaje"] = "Error al encontrar el usuario";
+                return View();
+            }
+
+            var verificationResult = _passwordHasher.VerifyHashedPassword(usuarioRecibido, usuarioRecibido.Contrasena, usuario.Contrasena);
+
+            if (verificationResult != PasswordVerificationResult.Success)
+            {
+                ViewData["Mensaje"] = "Contraseña incorrecta";
+                return View();
+            }
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, usuarioRecibido.CodigoUsuario.ToString()),
+                new Claim(ClaimTypes.Name, usuarioRecibido.NombreUsuario)
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var properties = new AuthenticationProperties { AllowRefresh = true };
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), properties);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> CerrarSesion()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Acceso");
+        }
+    }
+}
