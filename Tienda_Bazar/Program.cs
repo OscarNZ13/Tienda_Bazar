@@ -1,21 +1,33 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Tienda_Bazar.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configura la cadena de conexión para el DbContext
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+// Configure DbContext with SQL Server
 builder.Services.AddDbContext<BazarLibreriaContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BazarLibreriaConnection")));
 
-// Agrega los servicios necesarios para el contenedor
-builder.Services.AddControllersWithViews();
+//Configurar la autenticacion
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+    // Diciendole que la ruta de login es:
+    options.LoginPath = "/Acceso/Login";
+
+    // Acá podemos indicarle el tiempo que pued durar una sesion de usuario:
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+});
 
 var app = builder.Build();
 
-// Configura el pipeline de solicitudes HTTP
+// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // El valor predeterminado de HSTS es 30 días. Puedes cambiarlo para escenarios de producción. Más información en https://aka.ms/aspnetcore-hsts.
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -24,10 +36,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+//Indicarle que use la autenticacion:
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Acceso}/{action=Login}/{id?}");
 
 app.Run();

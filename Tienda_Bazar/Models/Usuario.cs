@@ -17,7 +17,12 @@ namespace Tienda_Bazar.Models
 
         public DateTime UltimaConexion { get; set; }
 
-        public bool Estado { get; set; }
+        // Relaciones
+        public int EstadoUsuarioId { get; set; }
+        public EstadoUsuario EstadoUsuario { get; set; } = null!;
+
+        public int RolId { get; set; }
+        public Rol Rol { get; set; } = null!;
 
         // Relaciones
         public ICollection<CarritoCompra> CarritoCompras { get; set; } = new List<CarritoCompra>();
