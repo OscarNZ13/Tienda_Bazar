@@ -22,7 +22,7 @@ namespace Tienda_Bazar.Controllers
         public async Task<IActionResult> Index()
         {
             var productos = await _context.Productos
-                .Include(p => p.ImagenesProductos)
+                .Include(p => p.ImagenesProductos) // Esto es para incluir la imagen vinculada en la table
                 .ToListAsync();
             return View(productos);
         }
@@ -36,6 +36,7 @@ namespace Tienda_Bazar.Controllers
             }
 
             var producto = await _context.Productos
+                .Include(p => p.ImagenesProductos) // Incluir la imagen a la hora de poner details
                 .FirstOrDefaultAsync(m => m.CodigoProducto == id);
             if (producto == null)
             {
@@ -53,7 +54,7 @@ namespace Tienda_Bazar.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CodigoProducto,NombreProducto,Precio,DisponibilidadInventario,Estado")] Producto producto, List<IFormFile> imagenes)
+        public async Task<IActionResult> Create([Bind("CodigoProducto,NombreProducto,Precio,DisponibilidadInventario,Estado")] Producto producto, List<IFormFile> imagenes) //Aqui se incluye la imagen relacionada
         {
             if (ModelState.IsValid)
             {
@@ -61,12 +62,12 @@ namespace Tienda_Bazar.Controllers
                 {
                     foreach (var imagen in imagenes)
                     {
-                        using (var ms = new MemoryStream())
+                        using (var ms = new MemoryStream()) // MemoryStream lo usamos por que la imagen está en bytes
                         {
                             await imagen.CopyToAsync(ms);
                             var imagenProducto = new ImagenProducto
                             {
-                                Imagen = ms.ToArray(),
+                                Imagen = ms.ToArray(), // Asignar la Imagen
                                 Producto = producto // Asignar el producto aquí
                             };
                             producto.ImagenesProductos.Add(imagenProducto);
@@ -102,7 +103,7 @@ namespace Tienda_Bazar.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CodigoProducto,NombreProducto,Precio,DisponibilidadInventario,Estado")] Producto producto, List<IFormFile> nuevasImagenes)
+        public async Task<IActionResult> Edit(int id, [Bind("CodigoProducto,NombreProducto,Precio,DisponibilidadInventario,Estado")] Producto producto, List<IFormFile> nuevasImagenes) //Mismo procedimiento
         {
             if (id != producto.CodigoProducto)
             {
@@ -114,7 +115,7 @@ namespace Tienda_Bazar.Controllers
                 try
                 {
                     var productoExistente = await _context.Productos
-                        .Include(p => p.ImagenesProductos)
+                        .Include(p => p.ImagenesProductos) //Incluimos la conexion con la table ImagenProductos
                         .FirstOrDefaultAsync(p => p.CodigoProducto == id);
 
                     if (productoExistente != null)
@@ -128,7 +129,7 @@ namespace Tienda_Bazar.Controllers
                         {
                             foreach (var imagen in nuevasImagenes)
                             {
-                                using (var ms = new MemoryStream())
+                                using (var ms = new MemoryStream()) // Repetir el proceso de MemoryStream
                                 {
                                     await imagen.CopyToAsync(ms);
                                     var imagenProducto = new ImagenProducto
