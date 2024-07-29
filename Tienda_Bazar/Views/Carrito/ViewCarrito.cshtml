@@ -1,0 +1,25 @@
+﻿@model Tienda_Bazar.Models.CartViewModel
+
+<h2>Carrito de Compras</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.ProductoNombre</td>
+                <td>@item.Cantidad</td>
+                <td>@item.Precio.ToString("C")</td>
+                <td>@item.Subtotal.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<h3>Total: @Model.Total.ToString("C")</h3>
