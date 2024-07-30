@@ -56,6 +56,11 @@ namespace Tienda_Bazar.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CodigoProducto,NombreProducto,Precio,DisponibilidadInventario,Estado")] Producto producto, List<IFormFile> imagenes) //Aqui se incluye la imagen relacionada
         {
+            if (producto.DisponibilidadInventario <= 0 && producto.Estado)
+            {
+                ModelState.AddModelError("Estado", "No se puede considerar activo a un producto sin disponibilidad");
+            }
+
             if (ModelState.IsValid)
             {
                 if (imagenes != null && imagenes.Count > 0)
@@ -105,6 +110,11 @@ namespace Tienda_Bazar.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CodigoProducto,NombreProducto,Precio,DisponibilidadInventario,Estado")] Producto producto, List<IFormFile> nuevasImagenes) //Mismo procedimiento
         {
+            if (producto.DisponibilidadInventario <= 0 && producto.Estado)
+            {
+                ModelState.AddModelError("Estado", "No se puede considerar activo a un producto sin disponibilidad");
+            }
+
             if (id != producto.CodigoProducto)
             {
                 return NotFound();
@@ -204,6 +214,35 @@ namespace Tienda_Bazar.Controllers
         private bool ProductoExists(int id)
         {
             return _context.Productos.Any(e => e.CodigoProducto == id);
+        }
+
+        //=============================================[ ZONA DE CATALOGO ]=================================================
+
+        public async Task<IActionResult> Catalogo()
+        {
+            var productosActivos = await _context.Productos
+                .Include(p => p.ImagenesProductos)
+                .Where(p => p.Estado)// Esto es para incluir la imagen vinculada en la table
+                .ToListAsync();
+            return View(productosActivos);
+        }
+
+        public async Task<IActionResult> DetailsCatalogo(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var producto = await _context.Productos
+                .Include(p => p.ImagenesProductos) // Incluir la imagen a la hora de poner details
+                .FirstOrDefaultAsync(m => m.CodigoProducto == id);
+            if (producto == null)
+            {
+                return NotFound();
+            }
+
+            return View(producto);
         }
     }
 }
