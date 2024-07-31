@@ -5,16 +5,13 @@ namespace Tienda_Bazar.Models
 {
     public class Producto
     {
-        [Key]
-        public int CodigoProducto { get; set; }
+        [Key] public int CodigoProducto { get; set; }
 
         [Required]
-        [MaxLength(100)]
-        public required string NombreProducto { get; set; }
+        [MaxLength(100)] public required string NombreProducto { get; set; }
 
         [Required]
-        [Column(TypeName = "decimal(10,2)")]
-        public decimal Precio { get; set; }
+        [Column(TypeName = "decimal(10,2)")] public decimal Precio { get; set; }
 
         [Required]
         public int DisponibilidadInventario { get; set; }
