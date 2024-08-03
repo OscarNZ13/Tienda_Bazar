@@ -40,7 +40,7 @@ namespace Tienda_Bazar.Controllers
             {
                 return RedirectToAction("Login", "Acceso");
             }
-            else
+            else 
             {
                 ViewData["Mensaje"] = "No se pudo crear el usuario";
                 return View();
@@ -48,7 +48,7 @@ namespace Tienda_Bazar.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login() 
         {
             if (User.Identity!.IsAuthenticated)
             {
