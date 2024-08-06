@@ -57,18 +57,14 @@
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-h
                                     @if (currentRol != "Administrador")
                                     {
                                         <a class="nav-link" asp-route-id="@parsedCurrentUserId" asp-action="Edit_UN" asp-controller="Usuarios">Editar Perfil</a>
                                     }else{
                                         <a class="nav-link" asp-action="Index" asp-controller="Usuarios">Administración de Usuarios</a>
-                                    }
-                                    
-                                    <a class="nav-link" href="">Gestión de Productos</a>
 
-                                    <a class="nav-link" href="">Administración de Usuarios</a>
-                                    <a class="nav-link" asp-action="Index" asp-controller="Productos">Gestión de Productos</a>
+                                        <a class="nav-link" asp-action="Index" asp-controller="Productos">Gestión de Productos</a>
+                                    }
 
                                 </nav>
                             </div>
