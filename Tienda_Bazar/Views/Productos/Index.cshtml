@@ -1,0 +1,77 @@
+﻿@model IEnumerable<Tienda_Bazar.Models.Producto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="mt-5">Gestion de Productos</h1>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.NombreProducto)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Precio)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DisponibilidadInventario)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Estado)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.First().ImagenesProductos.FirstOrDefault().Imagen)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NombreProducto)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Precio)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DisponibilidadInventario)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Estado)
+                        </td>
+                        <td>
+                            @if (item.ImagenesProductos != null && item.ImagenesProductos.Any())
+                            {
+                                foreach (var imagen in item.ImagenesProductos) 
+                                { 
+                                    <img src="data:image;base64,@Convert.ToBase64String(imagen.Imagen)" alt="Producto" style="width: 100px; height: auto; margin-right: 10px;" />
+                                }
+                            } <!-- En otras palabras, por cada imagen... -->
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.CodigoProducto">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.CodigoProducto">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.CodigoProducto">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
