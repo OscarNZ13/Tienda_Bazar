@@ -30,6 +30,7 @@ namespace Tienda_Bazar.Controllers
         public async Task<IActionResult> Registro(Usuario usuario)
         {
             usuario.Contrasena = _passwordHasher.HashPassword(usuario, usuario.Contrasena);
+            usuario.UltimaConexion = DateTime.Now;
             usuario.EstadoUsuarioId = 1; // Activo por defecto
             usuario.RolId = 2; // Usuario por defecto
 

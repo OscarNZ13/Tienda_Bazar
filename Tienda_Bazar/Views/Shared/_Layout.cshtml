@@ -1,4 +1,10 @@
-﻿@using System.Security.Claims;
+@using System.Security.Claims;
+@{
+    var currentUserId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault();
+    int parsedCurrentUserId = int.TryParse(currentUserId, out int result) ? result : -1; // Convierte a entero o usa un valor no válido (-1) si falla
+
+    var currentRol = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).SingleOrDefault();
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -30,8 +36,6 @@
                 </h5>
                 <!-- Sidebar Toggle-->
                 <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-                <!-- Navbar Search-->
-                <!-- Navbar-->
             }
         </nav>
 
@@ -53,8 +57,19 @@
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
+h
+                                    @if (currentRol != "Administrador")
+                                    {
+                                        <a class="nav-link" asp-route-id="@parsedCurrentUserId" asp-action="Edit_UN" asp-controller="Usuarios">Editar Perfil</a>
+                                    }else{
+                                        <a class="nav-link" asp-action="Index" asp-controller="Usuarios">Administración de Usuarios</a>
+                                    }
+                                    
+                                    <a class="nav-link" href="">Gestión de Productos</a>
+
                                     <a class="nav-link" href="">Administración de Usuarios</a>
                                     <a class="nav-link" asp-action="Index" asp-controller="Productos">Gestión de Productos</a>
+
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
