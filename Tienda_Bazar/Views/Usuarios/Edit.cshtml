@@ -13,46 +13,66 @@
 </head>
 <body>
 
-<h4>Usuario</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input asp-for="CodigoUsuario" />
-            <div class="form-group">
-                <label asp-for="NombreUsuario" class="control-label"></label>
-                <input asp-for="NombreUsuario" class="form-control" />
-                <span asp-validation-for="NombreUsuario" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Contrasena" class="control-label"></label>
-                <input asp-for="Contrasena" class="form-control" />
-                <span asp-validation-for="Contrasena" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EstadoUsuarioId" class="control-label"></label>
-                <select asp-for="EstadoUsuarioId" class="form-control" asp-items="ViewBag.EstadoUsuarioId"></select>
-                <span asp-validation-for="EstadoUsuarioId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RolId" class="control-label"></label>
-                <select asp-for="RolId" class="form-control" asp-items="ViewBag.RolId"></select>
-                <span asp-validation-for="RolId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    <h4>Usuario</h4>
+
+
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-7">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header"><h3 class="text-center font-weight-light my-4">Editar Usuario</h3></div>
+                                <div class="card-body">
+                                    <form asp-action="Edit">
+
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <input hidden asp-for="CodigoUsuario" />
+
+                                        <label class="control-label">Nombre de Usuario</label>
+                                        <input class="form-control mb-3" type="text" placeholder="Nombre Completo" required asp-for="NombreUsuario" />
+
+                                        <label asp-for="Contrasena" class="control-label"></label>
+                                        <input asp-for="Contrasena" class="form-control" />
+                                        <span asp-validation-for="Contrasena" class="text-danger"></span>
+
+                                        <label class="control-label">Estado</label>
+                                        <select asp-for="EstadoUsuarioId" class="form-control" asp-items="ViewBag.EstadoUsuarioId"></select>
+
+                                        <label class="control-label">Rol </label>
+                                        <select asp-for="RolId" class="form-control" asp-items="ViewBag.RolId"></select>
+
+                                        <br />
+                                        <div class="d-grid gap-2 mb-3">
+                                            <button class="btn btn-primary" type="submit">Guardar</button>
+                                        </div>
+
+                                        @if (ViewData["Mensaje"] != null)
+                                        {
+                                            <div class="alert alert-danger" role="alert">
+                                                @ViewData["Mensaje"]
+                                            </div>
+                                        }
+
+                                    </form>
+
+                                    <div class="d-grid gap-2 mb-3">
+                                        <button class="btn btn-danger" type="submit"><a asp-action="Index" style="color:white; text-decoration:none">Atrás</a></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
 </body>
 </html>
