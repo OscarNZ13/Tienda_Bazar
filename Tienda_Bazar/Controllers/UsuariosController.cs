@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Tienda_Bazar.Models;
-using Tienda_Bazar.Models.ViewModels;
 
 namespace Tienda_Bazar.Controllers
 {
@@ -86,7 +81,7 @@ namespace Tienda_Bazar.Controllers
         // POST: Usuarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CodigoUsuario,NombreUsuario,Contrasena,EstadoUsuarioId,RolId")] Usuario usuario)
+        public async Task<IActionResult> Edit(int id, [Bind("CodigoUsuario,NombreUsuario,EstadoUsuarioId,RolId")] Usuario usuario, string? newPassword)
         {
             if (id != usuario.CodigoUsuario)
             {
@@ -95,8 +90,24 @@ namespace Tienda_Bazar.Controllers
 
             try
             {
-                usuario.UltimaConexion = DateTime.Now;
-                _context.Update(usuario);
+                var usuarioDb = await _context.Usuario.FindAsync(id);
+                if (usuarioDb == null)
+                {
+                    return NotFound();
+                }
+
+                usuarioDb.NombreUsuario = usuario.NombreUsuario;
+                usuarioDb.EstadoUsuarioId = usuario.EstadoUsuarioId;
+                usuarioDb.RolId = usuario.RolId;
+                usuarioDb.UltimaConexion = DateTime.Now;
+
+                // Solo actualizar la contraseña si se ingresó una nueva
+                if (!string.IsNullOrEmpty(newPassword))
+                {
+                    usuarioDb.Contrasena = _passwordHasher.HashPassword(usuarioDb, newPassword);
+                }
+
+                _context.Update(usuarioDb);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -112,6 +123,7 @@ namespace Tienda_Bazar.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
 
         // GET: Usuarios/Edit/5
         public async Task<IActionResult> Edit_UN(int? id)
@@ -134,7 +146,7 @@ namespace Tienda_Bazar.Controllers
         // POST: Usuarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit_UN(int id, [Bind("CodigoUsuario,NombreUsuario,Contrasena,EstadoUsuarioId,RolId")] Usuario usuario)
+        public async Task<IActionResult> Edit_UN(int id, [Bind("CodigoUsuario,NombreUsuario,EstadoUsuarioId,RolId")] Usuario usuario, string? newPassword)
         {
             if (id != usuario.CodigoUsuario)
             {
@@ -143,8 +155,25 @@ namespace Tienda_Bazar.Controllers
 
             try
             {
-                usuario.UltimaConexion = DateTime.Now;
-                _context.Update(usuario);
+                var usuarioDb = await _context.Usuario.FindAsync(id);
+                if (usuarioDb == null)
+                {
+                    return NotFound();
+                }
+
+                // Actualizamos los campos no relacionados con la contraseña
+                usuarioDb.NombreUsuario = usuario.NombreUsuario;
+                usuarioDb.EstadoUsuarioId = usuario.EstadoUsuarioId;
+                usuarioDb.RolId = usuario.RolId;
+                usuarioDb.UltimaConexion = DateTime.Now;
+
+                // Si se ingresó una nueva contraseña, hashearla y guardarla
+                if (!string.IsNullOrEmpty(newPassword))
+                {
+                    usuarioDb.Contrasena = _passwordHasher.HashPassword(usuarioDb, newPassword);
+                }
+
+                _context.Update(usuarioDb);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
