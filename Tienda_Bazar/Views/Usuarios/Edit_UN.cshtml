@@ -30,8 +30,8 @@
                                         <label class="control-label">Nombre de Usuario</label>
                                         <input class="form-control mb-3" type="text" placeholder="Nombre Completo" required asp-for="NombreUsuario" />
 
-                                        <label asp-for="Contrasena" class="control-label"></label>
-                                        <input asp-for="Contrasena" class="form-control" />
+                                        <label asp-for="Contrasena" class="control-label">Nueva Contraseña (dejar vacío para mantener la actual)</label>
+                                        <input name="newPassword" class="form-control" value="" />
                                         <span asp-validation-for="Contrasena" class="text-danger"></span>
 
                                         <label class="control-label">Estado</label>

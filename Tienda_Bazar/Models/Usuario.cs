@@ -11,9 +11,8 @@ namespace Tienda_Bazar.Models
         [MaxLength(100)]
         public required string NombreUsuario { get; set; }
 
-        [Required]
         [MaxLength(255)]
-        public required string Contrasena { get; set; }
+        public string? Contrasena { get; set; }
 
         public DateTime UltimaConexion { get; set; }
 

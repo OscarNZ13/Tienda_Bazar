@@ -1,11 +1,11 @@
-﻿using Tienda_Bazar.Models;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Tienda_Bazar.Models;
 using Tienda_Bazar.Models.ViewModels;
-using Microsoft.AspNetCore.Identity;
 
 namespace Tienda_Bazar.Controllers
 {
@@ -41,7 +41,7 @@ namespace Tienda_Bazar.Controllers
             {
                 return RedirectToAction("Login", "Acceso");
             }
-            else 
+            else
             {
                 ViewData["Mensaje"] = "No se pudo crear el usuario";
                 return View();
@@ -49,7 +49,7 @@ namespace Tienda_Bazar.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login() 
+        public IActionResult Login()
         {
             if (User.Identity!.IsAuthenticated)
             {
