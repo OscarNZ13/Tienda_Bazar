@@ -146,7 +146,7 @@ namespace Tienda_Bazar.Controllers
         // POST: Usuarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit_UN(int id, [Bind("CodigoUsuario,NombreUsuario,EstadoUsuarioId,RolId")] Usuario usuario, string? newPassword)
+        public async Task<IActionResult> Edit_UN(int id, [Bind("CodigoUsuario,NombreUsuario")] Usuario usuario, string? newPassword)
         {
             if (id != usuario.CodigoUsuario)
             {
@@ -163,8 +163,6 @@ namespace Tienda_Bazar.Controllers
 
                 // Actualizamos los campos no relacionados con la contraseña
                 usuarioDb.NombreUsuario = usuario.NombreUsuario;
-                usuarioDb.EstadoUsuarioId = usuario.EstadoUsuarioId;
-                usuarioDb.RolId = usuario.RolId;
                 usuarioDb.UltimaConexion = DateTime.Now;
 
                 // Si se ingresó una nueva contraseña, hashearla y guardarla
