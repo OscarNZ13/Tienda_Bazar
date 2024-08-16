@@ -19,13 +19,13 @@
                 <td>
                     <form asp-action="UpdateQuantity" method="post">
                         <input type="hidden" name="carritoId" value="@item.CarritoId" />
-                        <input type="hidden" name="newQuantity" value="@item.Cantidad - 1" />
+                        <input type="hidden" name="newQuantity" value="@(item.Cantidad - 1)" />
                         <button type="submit" class="btn btn-danger" @(item.Cantidad <= 1 ? "disabled" : "")>-</button>
                     </form>
                     @item.Cantidad
                     <form asp-action="UpdateQuantity" method="post">
                         <input type="hidden" name="carritoId" value="@item.CarritoId" />
-                        <input type="hidden" name="newQuantity" value="@item.Cantidad + 1" />
+                        <input type="hidden" name="newQuantity" value="@(item.Cantidad + 1)" />
                         <button type="submit" class="btn btn-success" @(item.Cantidad >= item.MaxQuantity ? "disabled" : "")>+</button>
                     </form>
                 </td>

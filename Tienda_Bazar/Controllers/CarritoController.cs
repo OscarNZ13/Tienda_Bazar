@@ -26,11 +26,13 @@ namespace Tienda_Bazar.Controllers
                                        .Where(c => c.CodigoUsuario == userId)
                                        .Select(c => new CartItemViewModel
                                        {
+                                           CarritoId = c.CodigoCarrito,
                                            ProductoId = c.CodigoProducto,
                                            ProductoNombre = c.Producto.NombreProducto,
                                            Cantidad = c.Cantidad,
                                            Precio = c.Producto.Precio,
-                                           Subtotal = c.Cantidad * c.Producto.Precio
+                                           Subtotal = c.Cantidad * c.Producto.Precio,
+                                           MaxQuantity = c.Producto.DisponibilidadInventario
                                        })
                                        .ToList();
 
@@ -41,6 +43,25 @@ namespace Tienda_Bazar.Controllers
             };
 
             return View(carritoViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateQuantity(int carritoId, int newQuantity)
+        {
+            Console.WriteLine($"Carrito ID: {carritoId}, Nueva Cantidad: {newQuantity}");
+            var carritoItem = await _appDbContext.CarritoCompras
+                                                 .Include(c => c.Producto)
+                                                 .FirstOrDefaultAsync(c => c.CodigoCarrito == carritoId);
+            if (carritoItem == null || newQuantity < 1 || newQuantity > carritoItem.Producto.DisponibilidadInventario)
+            {
+                return RedirectToAction("ViewCarrito");
+            }
+
+            carritoItem.Cantidad = newQuantity;
+            _appDbContext.CarritoCompras.Update(carritoItem);
+            await _appDbContext.SaveChangesAsync();
+
+            return RedirectToAction("ViewCarrito");
         }
 
         [HttpPost]
@@ -57,20 +78,20 @@ namespace Tienda_Bazar.Controllers
 
             if (!carritoItems.Any())
             {
-                // El carrito está vacío, redirigir o mostrar un mensaje de error
+                // Si el carrito esta vacio
                 return RedirectToAction("ViewCarrito");
             }
 
-            // Obtener el usuario actual desde la base de datos
+            // Obtener el usuario actual desde la DB
             var usuario = await _appDbContext.Usuario.FindAsync(userId);
 
             if (usuario == null)
             {
-                // Manejar el caso en el que el usuario no se encuentra
+                // Si el usuario no existe
                 return RedirectToAction("ViewCarrito");
             }
 
-            // Crear el pedido
+            // Crear pedido
             var pedido = new Pedido
             {
                 CodigoUsuario = userId,
@@ -82,25 +103,25 @@ namespace Tienda_Bazar.Controllers
             _appDbContext.Pedidos.Add(pedido);
             await _appDbContext.SaveChangesAsync(); // Guardar para obtener el ID del pedido
 
-            // Crear los detalles del pedido
+            // Crear detalles del pedido
             var detallesPedido = carritoItems.Select(c => new DetallePedido
             {
                 CodigoProducto = c.CodigoProducto,
                 Cantidad = c.Cantidad,
                 PrecioUnitario = c.Producto.Precio,
                 Producto = c.Producto,
-                Pedido = pedido // Inicializar la propiedad Pedido
+                Pedido = pedido
             }).ToList();
 
             // Agregar los detalles del pedido al contexto
             _appDbContext.DetallesPedidos.AddRange(detallesPedido);
             await _appDbContext.SaveChangesAsync();
 
-            // Limpiar el carrito del usuario
+            // Limpiar carrito
             _appDbContext.CarritoCompras.RemoveRange(carritoItems);
             await _appDbContext.SaveChangesAsync();
 
-            // Redirigir a la vista de confirmación o de detalles del pedido
+            // Redirigir a detalles del pedido
             return RedirectToAction("ViewDetails", "Pedido", new { id = pedido.CodigoPedido });
         }
     }
