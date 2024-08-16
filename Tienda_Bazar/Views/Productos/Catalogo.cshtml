@@ -48,7 +48,7 @@
                         <p class="card-text">Precio: @producto.Precio.ToString("C")</p> <!-- C referencia a Colones -->
                         <p class="card-text">Disponibilidad: @producto.DisponibilidadInventario</p>
                         <a asp-action="DetailsCatalogo" asp-route-id="@producto.CodigoProducto" class="btn btn-primary">Detalles</a>
-                        <a asp-action="" asp-route-id="@producto.CodigoProducto" class="btn btn-primary">Reseñas</a>
+                        <a asp-action="ViewResenas" asp-route-id="@producto.CodigoProducto" class="btn btn-primary">Reseñas</a>
                     </div>
                 </div>
             </div>
