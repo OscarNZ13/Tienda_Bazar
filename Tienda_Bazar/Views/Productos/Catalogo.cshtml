@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Tienda_Bazar.Models.Producto>
+
+@{
+    ViewData["Title"] = "Catalogo";
+}
+
+<div style="height: 100px;"></div> <!-- Espacio vacío de 100px -->
+
+<div class="container">
+    <div class="row">
+        @foreach (var producto in Model) // Se va a encargar de mostrar todos los productos
+        {
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    @if (producto.ImagenesProductos != null && producto.ImagenesProductos.Any()) //Se va a encargar de las imagenes
+                    {
+                        <div id="carousel-@producto.CodigoProducto" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                @{
+                                    var isActive = true;
+                                    foreach (var imagenProducto in producto.ImagenesProductos) //Cada Imagen va a repetir este proceso
+                                    {
+                                        var base64Imagen = Convert.ToBase64String(imagenProducto.Imagen);
+                                        var imagenSrc = $"data:image/jpeg;base64,{base64Imagen}";
+                                        <div class="carousel-item @(isActive ? "active" : "")">
+                                            <img class="d-block w-100" src="@imagenSrc" alt="Producto">
+                                        </div>
+                                        isActive = false;
+                                    }
+                                }
+                            </div>
+                            <a class="carousel-control-prev" href="#carousel-@producto.CodigoProducto" role="button" data-bs-slide="prev"> <!-- Flecha izquierda -->
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carousel-@producto.CodigoProducto" role="button" data-bs-slide="next"> <!-- Flecha Derecha -->
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <img class="card-img-top" src="path/to/default/image.jpg" alt="Producto">
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@producto.NombreProducto</h5>
+                        <p class="card-text">Precio: @producto.Precio.ToString("C")</p> <!-- C referencia a Colones -->
+                        <p class="card-text">Disponibilidad: @producto.DisponibilidadInventario</p>
+                        <a asp-action="DetailsCatalogo" asp-route-id="@producto.CodigoProducto" class="btn btn-primary">Detalles</a>
+                        <a asp-action="" asp-route-id="@producto.CodigoProducto" class="btn btn-primary">Reseñas</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

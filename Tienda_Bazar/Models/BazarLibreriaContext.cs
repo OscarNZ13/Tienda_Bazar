@@ -78,6 +78,14 @@ public class BazarLibreriaContext : DbContext
             .WithMany(u => u.Resenas)
             .HasForeignKey(r => r.CodigoUsuario);
 
+        modelBuilder.Entity<Usuario>()
+            .Property(u => u.CodigoUsuario)
+            .ValueGeneratedOnAdd(); // Asegura que la base de datos genere automáticamente este valor
+
+        modelBuilder.Entity<Usuario>()
+            .Property(u => u.UltimaConexion)
+            .HasDefaultValueSql("GETDATE()"); // Establece un valor por defecto generado por la base de datos
+
         modelBuilder.Entity<EstadoUsuario>().HasData(
                 new EstadoUsuario { EstadoUsuarioId = 1, Nombre = "Activo" },
                 new EstadoUsuario { EstadoUsuarioId = 2, Nombre = "Inactivo" }
@@ -87,6 +95,7 @@ public class BazarLibreriaContext : DbContext
             new Rol { RolId = 1, Nombre = "Administrador" },
             new Rol { RolId = 2, Nombre = "Usuario" }
         );
+
 
         base.OnModelCreating(modelBuilder);
     }

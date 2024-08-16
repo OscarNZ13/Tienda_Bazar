@@ -1,4 +1,10 @@
-﻿@using System.Security.Claims;
+@using System.Security.Claims;
+@{
+    var currentUserId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault();
+    int parsedCurrentUserId = int.TryParse(currentUserId, out int result) ? result : -1; // Convierte a entero o usa un valor no válido (-1) si falla
+
+    var currentRol = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).SingleOrDefault();
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,10 +18,9 @@
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="~/css/styles.css" rel="stylesheet" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
-<body class ="sb-nav-fixed">
+<body class="sb-nav-fixed">
     <header>
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             @if (User.Identity.IsAuthenticated)
@@ -31,8 +36,6 @@
                 </h5>
                 <!-- Sidebar Toggle-->
                 <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-                <!-- Navbar Search-->
-                <!-- Navbar-->
             }
         </nav>
 
@@ -54,8 +57,15 @@
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="">Administración de Usuarios</a>
-                                    <a class="nav-link" href="">Gestión de Productos</a>
+                                    @if (currentRol != "Administrador")
+                                    {
+                                        <a class="nav-link" asp-route-id="@parsedCurrentUserId" asp-action="Edit_UN" asp-controller="Usuarios">Editar Perfil</a>
+                                    }else{
+                                        <a class="nav-link" asp-action="Index" asp-controller="Usuarios">Administración de Usuarios</a>
+
+                                        <a class="nav-link" asp-action="Index" asp-controller="Productos">Gestión de Productos</a>
+                                    }
+
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
@@ -80,12 +90,17 @@
                                         Catalogo
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
-                                    <a class="nav-link" asp-action="ViewCarrito" asp-controller="Carrito">
-                                        Carrito
-                                    </a>
-                                    <a class="nav-link" asp-action="ViewPedidos" asp-controller="Pedido">
-                                        Pedidos
-                                    </a>
+                                  <a class="nav-link" asp-action="ViewCarrito" asp-controller="Carrito">
+                                      Carrito
+                                  </a>
+                                  <a class="nav-link" asp-action="ViewPedidos" asp-controller="Pedido">
+                                      Pedidos
+                                  </a>
+                                  <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
+                                      <nav class="sb-sidenav-menu-nested nav">
+                                          <a class="nav-link" asp-action="Catalogo" asp-controller="Productos">Catalogo de Productos</a>
+                                      </nav>
+                                  </div>
                                 </nav>
                             </div>
                         </div>
@@ -98,6 +113,7 @@
                     </div>
                 </nav>
             </div>
+        </div>
     </header>
     <div class="container">
         <main role="main" class="pb-3">
@@ -113,7 +129,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="~/js/scripts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>

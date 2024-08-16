@@ -1,0 +1,69 @@
+﻿@model Tienda_Bazar.Models.Usuario
+
+@{
+    Layout = "_Layout";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit</title>
+</head>
+<body>
+
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-7">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header"><h3 class="text-center font-weight-light my-4">Editar Usuario</h3></div>
+                                <div class="card-body">
+                                    <form asp-action="Edit_UN">
+
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <input hidden asp-for="CodigoUsuario" />
+
+                                        <label class="control-label">Nombre de Usuario</label>
+                                        <input class="form-control mb-3" type="text" placeholder="Nombre Completo" required asp-for="NombreUsuario" />
+
+                                        <label asp-for="Contrasena" class="control-label">Nueva Contraseña (dejar vacío para mantener la actual)</label>
+                                        <input name="newPassword" class="form-control" value="" />
+                                        <span asp-validation-for="Contrasena" class="text-danger"></span>
+
+                                        <br />
+                                        <div class="d-grid gap-2 mb-3">
+                                            <button class="btn btn-primary" type="submit">Guardar</button>
+                                        </div>
+
+                                        @if (ViewData["Mensaje"] != null)
+                                        {
+                                            <div class="alert alert-danger" role="alert">
+                                                @ViewData["Mensaje"]
+                                            </div>
+                                        }
+
+                                    </form>
+
+                                    <div class="d-grid gap-2 mb-3">
+                                        <button class="btn btn-danger" type="submit"><a asp-action="Index" asp-controller="Home" style="color:white; text-decoration:none">Atrás</a></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</body>
+</html>
