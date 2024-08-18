@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
@@ -27,29 +28,48 @@
     </style>
 </head>
 <body>
+
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+
         <div class="container">
-            <a class="navbar-brand" href="@Url.Action("Bienvenida", "Paginas")">Bazar y Librería</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("Bienvenida", "Paginas")">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("Contacto", "Paginas")">Contacto</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("Redes", "Paginas")">Redes Sociales</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-success text-white" href="@Url.Action("Login", "Acceso")">Iniciar Sesión</a>
-                    </li>
-                </ul>
-            </div>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a class="navbar-brand ps-3" asp-action="Index" asp-controller="Home">
+                    @User.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).SingleOrDefault()
+                </a>
+                <h5 class="display-4">
+                    <h1 hidden>
+                        @User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault()
+                    </h1>
+                </h5>
+            }
+            else
+            {
+                <a class="navbar-brand" href="@Url.Action("Bienvenida", "Paginas")">Bazar y Librería</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Bienvenida", "Paginas")">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Contacto", "Paginas")">Contacto</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Redes", "Paginas")">Redes Sociales</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-success text-white" href="@Url.Action("Login", "Acceso")">Iniciar Sesión</a>
+                        </li>
+                    </ul>
+                </div>
+            }
+
         </div>
+
     </nav>
 
     <div class="container">
