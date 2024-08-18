@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Tienda_Bazar.Models;
 
 namespace Tienda_Bazar.Controllers
 {
+    [Authorize]
     public class UsuariosController : Controller
     {
         private readonly BazarLibreriaContext _context;
