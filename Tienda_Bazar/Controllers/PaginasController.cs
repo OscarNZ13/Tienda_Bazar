@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Tienda_Bazar.Controllers
 {
-    [Authorize]
     public class PaginasController : Controller
     {
         public ActionResult Bienvenida()

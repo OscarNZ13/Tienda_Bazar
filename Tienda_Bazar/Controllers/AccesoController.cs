@@ -98,7 +98,7 @@ namespace Tienda_Bazar.Controllers
         public async Task<IActionResult> CerrarSesion()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Acceso");
+            return RedirectToAction("Bienvenida", "Paginas");
         }
     }
 }
