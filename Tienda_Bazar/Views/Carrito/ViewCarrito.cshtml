@@ -1,0 +1,48 @@
+﻿@model Tienda_Bazar.Models.CartViewModel
+
+<h2>Carrito de Compras</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Subtotal</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.ProductoNombre</td>
+                <td>
+                    <form asp-action="CambiarCantidad" method="post">
+                        <input type="hidden" name="carritoId" value="@item.CarritoId" />
+                        <input type="hidden" name="nuevaCantidad" value="@(item.Cantidad - 1)" />
+                        <button type="submit" class="btn btn-danger" @(item.Cantidad <= 1 ? "disabled" : "")>-</button>
+                    </form>
+                    @item.Cantidad
+                    <form asp-action="CambiarCantidad" method="post">
+                        <input type="hidden" name="carritoId" value="@item.CarritoId" />
+                        <input type="hidden" name="nuevaCantidad" value="@(item.Cantidad + 1)" />
+                        <button type="submit" class="btn btn-success" @(item.Cantidad >= item.MaxQuantity ? "disabled" : "")>+</button>
+                    </form>
+                </td>
+                <td>@item.Precio.ToString("C")</td>
+                <td>@item.Subtotal.ToString("C")</td>
+                <td>
+                    <form asp-action="EliminarDelCarrito" method="post">
+                        <input type="hidden" name="carritoId" value="@item.CarritoId" />
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<h3>Total: @Model.Total.ToString("C")</h3>
+
+<form asp-action="FinalizarCompra" method="post">
+    <button type="submit" class="btn btn-primary">Finalizar Compra</button>
+</form>
