@@ -59,6 +59,11 @@ namespace Tienda_Bazar.Controllers
                 ModelState.AddModelError("Estado", "No se puede considerar activo a un producto sin disponibilidad");
             }
 
+            if (producto.DisponibilidadInventario < 0)
+            {
+                ModelState.AddModelError("Estado", "No se puede considerar activo a un producto sin disponibilidad");
+            }
+
             if (ModelState.IsValid)
             {
                 if (imagenes != null && imagenes.Count > 0)
@@ -185,6 +190,7 @@ namespace Tienda_Bazar.Controllers
             }
 
             var producto = await _context.Productos
+                .Include(p => p.ImagenesProductos) // Incluir las imagenes
                 .FirstOrDefaultAsync(m => m.CodigoProducto == id);
             if (producto == null)
             {
@@ -199,9 +205,17 @@ namespace Tienda_Bazar.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var producto = await _context.Productos.FindAsync(id);
+            var producto = await _context.Productos
+        .Include(p => p.ImagenesProductos) // Incluir las imagenes
+        .FirstOrDefaultAsync(p => p.CodigoProducto == id);
+
             if (producto != null)
             {
+                if (producto.ImagenesProductos != null)
+                {
+                    _context.ImagenesProductos.RemoveRange(producto.ImagenesProductos);
+                }
+
                 _context.Productos.Remove(producto);
             }
 
