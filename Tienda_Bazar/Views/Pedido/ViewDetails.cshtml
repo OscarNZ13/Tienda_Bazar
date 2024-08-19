@@ -1,0 +1,56 @@
+﻿@model Tienda_Bazar.Models.Pedido
+
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Pedido</h2>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Código del Pedido:
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CodigoPedido)
+        </dd>
+        <dt class = "col-sm-2">
+            Nombre de Usuario:
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Usuario.NombreUsuario)
+        </dd>
+        <dt class = "col-sm-2">
+            Fecha del Pedido:
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaPedido)
+        </dd>
+    </dl>
+</div>
+
+<h4>Detalles del Pedido</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.DetallesPedidos) 
+    {
+        <tr>
+            <td>@item.Producto.NombreProducto</td>
+            <td>@item.Cantidad</td>
+            <td>@item.PrecioUnitario.ToString("C")</td>
+            <td>@((item.Cantidad * item.PrecioUnitario).ToString("C"))</td>
+        </tr>
+    }
+    </tbody>
+</table>
+<a asp-action="ViewPedidos" class="btn btn-secondary">Volver a la lista</a>

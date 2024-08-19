@@ -1,0 +1,39 @@
+﻿@model List<Tienda_Bazar.Models.Resena>
+
+<h2 style="margin-top: 20px;">Reseñas del Producto</h2>
+
+<form asp-action="AgregarResena" asp-controller="Resena" method="post">
+    <input type="hidden" name="CodigoProducto" value="@ViewBag.CodigoProducto" />
+    <div class="form-group">
+        <label for="descripcion">Escribe tu reseña:</label>
+        <textarea id="descripcion" name="descripcion" class="form-control" rows="3" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary" style="margin-top: 6px;">Agregar Reseña</button>
+</form>
+
+
+<hr />
+
+<h3>Lista de Reseñas</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Usuario</th>
+            <th>Reseña</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var resena in Model)
+        {
+            <tr>
+                <td>@resena.Usuario.NombreUsuario</td>
+                <td>@resena.DescipcionResena</td>
+                <td>@resena.FechaResena.ToString("g")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="Catalogo" asp-controller="Productos" class="btn btn-secondary">Volver al Catálogo</a>
+
+

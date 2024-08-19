@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Tienda_Bazar.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Pedidos";
+}
+
+<h2>Pedidos</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Código de Pedido</th>
+            <th>Nombre de Usuario</th>
+            <th>Fecha de Pedido</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CodigoPedido)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Usuario.NombreUsuario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaPedido)
+                </td>
+                <td>
+                    <a asp-action="ViewDetails" asp-route-id="@item.CodigoPedido" class="btn btn-info">Detalles</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
