@@ -5,50 +5,77 @@
 }
 
 <h1>Edit</h1>
+<div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+        <main>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-7">
+                        <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div class="card-header"><h3 class="text-center font-weight-light my-4">Editar Producto</h3></div>
+                            <div class="card-body">
+                                <form asp-action="Edit" enctype="multipart/form-data">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <div class="form-group">
+                                        <label class="control-label">Nombre del Producto</label>
+                                        <input class="form-control mb-3" type="text" placeholder="Nombre" required asp-for="NombreProducto" />
+                                        <span asp-validation-for="NombreProducto" class="text-danger"></span>
+                                    </div>
 
-<h4>Producto</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="CodigoProducto" />
-            <div class="form-group">
-                <label asp-for="NombreProducto" class="control-label"></label>
-                <input asp-for="NombreProducto" class="form-control" />
-                <span asp-validation-for="NombreProducto" class="text-danger"></span>
+                                    <div class="form-group">
+                                        <label class="control-label">Precio</label>
+                                        <input class="form-control mb-3" type="number" placeholder="Precio" required asp-for="Precio" />
+                                        <span asp-validation-for="Precio" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label">Disponibilidad en el Inventario</label>
+                                        <input class="form-control mb-3" type="number" placeholder="Disponibilidad" required asp-for="DisponibilidadInventario" />
+                                        <span asp-validation-for="DisponibilidadInventario" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
+                                        </label>
+                                        <span asp-validation-for="Estado" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Imagenes</label>
+                                        <input type="file" name="imagenes" class="form-control" multiple />
+                                    </div>
+
+                                    <br />
+                                    <div class="d-grid gap-2 mb-3">
+                                        <button class="btn btn-primary" type="submit">Crear</button>
+                                    </div>
+
+                                    @if (ViewData["Mensaje"] != null)
+                                    {
+                                        <div class="alert alert-danger" role="alert">
+                                            @ViewData["Mensaje"]
+                                        </div>
+                                    }
+
+                                </form>
+
+                                <div class="d-grid gap-2 mb-3">
+                                    <button class="btn btn-danger" type="submit"><a asp-action="Index" asp-controller="Productos" style="color:white; text-decoration:none">Regresar</a></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Precio" class="control-label"></label>
-                <input asp-for="Precio" class="form-control" />
-                <span asp-validation-for="Precio" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DisponibilidadInventario" class="control-label"></label>
-                <input asp-for="DisponibilidadInventario" class="form-control" />
-                <span asp-validation-for="DisponibilidadInventario" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
-                </label>
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label>Imagenes</label> <!-- Tengo que resolver esto, ya que solo añade imagenes, necesito un boton que añada y otro que elimine imagenes-->
-                <input type="file" name="nuevasImagenes" class="form-control" multiple />
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </main>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
