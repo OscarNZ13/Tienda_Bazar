@@ -4,7 +4,9 @@
     ViewData["Title"] = "Catalogo";
 }
 
-<div style="height: 100px;"></div> <!-- Espacio vacío de 100px -->
+<div style="height: 15px;"></div> <!-- Espacio vacío de 100px -->
+<h2>Catálogo de Productos</h2>
+<div style="height: 10px;"></div>
 
 <div class="container">
     <div class="row">
@@ -45,10 +47,16 @@
                     }
                     <div class="card-body">
                         <h5 class="card-title">@producto.NombreProducto</h5>
-                        <p class="card-text">Precio: @producto.Precio.ToString("C")</p> <!-- C referencia a Colones -->
+                        <p class="card-text">Precio: @producto.Precio.ToString("C")</p>
                         <p class="card-text">Disponibilidad: @producto.DisponibilidadInventario</p>
-                        <a asp-action="DetailsCatalogo" asp-route-id="@producto.CodigoProducto" class="btn btn-primary">Detalles</a>
-                        <a asp-action="ViewResenas" asp-route-id="@producto.CodigoProducto" class="btn btn-primary">Reseñas</a>
+                        <div class="d-flex">
+                            <a asp-action="DetailsCatalogo" asp-route-id="@producto.CodigoProducto" class="btn btn-primary me-3">Detalles</a>
+                            <a asp-action="ViewResenas" asp-controller="Resena" asp-route-CodigoProducto="@producto.CodigoProducto" class="btn btn-primary me-3">Reseñas</a>
+                            <form asp-action="AgregarAlCarrito" asp-controller="Carrito" method="post" style="display: inline;">
+                                <input type="hidden" name="productoId" value="@producto.CodigoProducto" />
+                                <button type="submit" class="btn btn-primary">Agregar al carrito</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

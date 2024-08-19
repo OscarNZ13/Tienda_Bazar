@@ -246,55 +246,5 @@ namespace Tienda_Bazar.Controllers
             return View(producto);
         }
 
-// -----------------------Zona Resenas------------------------------
-
-        // Ver todas las resenas
-        public async Task<IActionResult> ViewResenas(int productoId)
-        {
-            Console.WriteLine($"Producto ID recibido: {productoId}");
-
-            var resenas = await _context.Resenas
-                                .Include(r => r.Usuario)
-                                .Where(r => r.CodigoProducto == productoId)
-                                .ToListAsync();
-            ViewBag.ProductoId = productoId;
-            return View("ViewResenas", resenas);
-        }
-
-        // Agregar resena
-        [HttpPost]
-        public async Task<IActionResult> AgregarResena(int productoId, string descripcion)
-        {
-            // Verificar si el productoId está llegando correctamente
-            Console.WriteLine($"Producto ID recibido: {productoId}");
-
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            var userId = int.Parse(userIdClaim);
-
-            var producto = await _context.Productos.FindAsync(productoId);
-            var usuario = await _context.Usuario.FindAsync(userId);
-
-            if (producto == null)
-            {
-                Console.WriteLine("Producto no encontrado");
-                return NotFound("Producto no encontrado");
-            }
-
-            var resena = new Resena
-            {
-                CodigoProducto = productoId,
-                CodigoUsuario = userId,
-                DescipcionResena = descripcion,
-                FechaResena = DateTime.Now,
-                Producto = producto,
-                Usuario = usuario
-            };
-
-            _context.Resenas.Add(resena);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("ViewResenas", new { productoId });
-        }
-
     }
 }

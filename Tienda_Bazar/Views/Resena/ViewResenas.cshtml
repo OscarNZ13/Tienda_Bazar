@@ -2,14 +2,15 @@
 
 <h2>Reseñas del Producto</h2>
 
-<form asp-action="AgregarResena" method="post">
-    <input type="hidden" name="productoId" value="@ViewBag.ProductoId" />
+<form asp-action="AgregarResena" asp-controller="Resena" method="post">
+    <input type="hidden" name="CodigoProducto" value="@ViewBag.CodigoProducto" />
     <div class="form-group">
         <label for="descripcion">Escribe tu reseña:</label>
         <textarea id="descripcion" name="descripcion" class="form-control" rows="3" required></textarea>
     </div>
-    <button type="submit" class="btn btn-primary">Agregar Reseña</button>
+    <button type="submit" class="btn btn-primary" style="margin-top: 6px;">Agregar Reseña</button>
 </form>
+
 
 <hr />
 
@@ -33,4 +34,6 @@
         }
     </tbody>
 </table>
+<a asp-action="Catalogo" asp-controller="Productos" class="btn btn-secondary">Volver al Catálogo</a>
+
 

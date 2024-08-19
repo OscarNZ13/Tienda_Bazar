@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Tienda_Bazar.Models;
+using Tienda_Bazar.Models.ViewModels;
 
 namespace Tienda_Bazar.Controllers
 {
@@ -46,18 +47,18 @@ namespace Tienda_Bazar.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateQuantity(int carritoId, int newQuantity)
+        public async Task<IActionResult> CambiarCantidad(int carritoId, int nuevaCantidad)
         {
-            Console.WriteLine($"Carrito ID: {carritoId}, Nueva Cantidad: {newQuantity}");
+            Console.WriteLine($"Carrito ID: {carritoId}, Nueva Cantidad: {nuevaCantidad}");
             var carritoItem = await _appDbContext.CarritoCompras
                                                  .Include(c => c.Producto)
                                                  .FirstOrDefaultAsync(c => c.CodigoCarrito == carritoId);
-            if (carritoItem == null || newQuantity < 1 || newQuantity > carritoItem.Producto.DisponibilidadInventario)
+            if (carritoItem == null || nuevaCantidad < 1 || nuevaCantidad > carritoItem.Producto.DisponibilidadInventario)
             {
                 return RedirectToAction("ViewCarrito");
             }
 
-            carritoItem.Cantidad = newQuantity;
+            carritoItem.Cantidad = nuevaCantidad;
             _appDbContext.CarritoCompras.Update(carritoItem);
             await _appDbContext.SaveChangesAsync();
 
@@ -78,7 +79,6 @@ namespace Tienda_Bazar.Controllers
 
             if (!carritoItems.Any())
             {
-                // Si el carrito esta vacio
                 return RedirectToAction("ViewCarrito");
             }
 
@@ -87,7 +87,6 @@ namespace Tienda_Bazar.Controllers
 
             if (usuario == null)
             {
-                // Si el usuario no existe
                 return RedirectToAction("ViewCarrito");
             }
 
@@ -99,9 +98,8 @@ namespace Tienda_Bazar.Controllers
                 FechaPedido = DateTime.Now
             };
 
-            // Agregar el pedido al contexto
             _appDbContext.Pedidos.Add(pedido);
-            await _appDbContext.SaveChangesAsync(); // Guardar para obtener el ID del pedido
+            await _appDbContext.SaveChangesAsync(); 
 
             // Crear detalles del pedido
             var detallesPedido = carritoItems.Select(c => new DetallePedido
@@ -113,16 +111,71 @@ namespace Tienda_Bazar.Controllers
                 Pedido = pedido
             }).ToList();
 
-            // Agregar los detalles del pedido al contexto
             _appDbContext.DetallesPedidos.AddRange(detallesPedido);
             await _appDbContext.SaveChangesAsync();
 
-            // Limpiar carrito
             _appDbContext.CarritoCompras.RemoveRange(carritoItems);
             await _appDbContext.SaveChangesAsync();
 
             // Redirigir a detalles del pedido
             return RedirectToAction("ViewDetails", "Pedido", new { id = pedido.CodigoPedido });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AgregarAlCarrito(int productoId, int cantidad = 1)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userId = int.Parse(userIdClaim);
+            var usuario = await _appDbContext.Usuario.FindAsync(userId);
+
+            var producto = await _appDbContext.Productos.FindAsync(productoId);
+            if (producto == null)
+            {
+                return NotFound("Producto no encontrado");
+            }
+
+            var carritoItem = await _appDbContext.CarritoCompras
+                                             .FirstOrDefaultAsync(c => c.CodigoUsuario == userId && c.CodigoProducto == productoId);
+
+            if (carritoItem != null)
+            {
+                carritoItem.Cantidad += cantidad;
+            }
+            else
+            {
+                carritoItem = new CarritoCompra
+                {
+                    CodigoUsuario = userId,
+                    CodigoProducto = productoId,
+                    Cantidad = cantidad,
+                    Producto = producto,
+                    Usuario = usuario
+                };
+                _appDbContext.CarritoCompras.Add(carritoItem);
+            }
+
+            await _appDbContext.SaveChangesAsync();
+
+            return RedirectToAction("ViewCarrito", "Carrito");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EliminarDelCarrito(int carritoId)
+        {
+            var carritoItem = await _appDbContext.CarritoCompras
+                                                 .FirstOrDefaultAsync(c => c.CodigoCarrito == carritoId);
+
+            if (carritoItem == null)
+            {
+                return RedirectToAction("ViewCarrito");
+            }
+
+            _appDbContext.CarritoCompras.Remove(carritoItem);
+            await _appDbContext.SaveChangesAsync();
+
+            return RedirectToAction("ViewCarrito");
+        }
+
     }
 }
+  
