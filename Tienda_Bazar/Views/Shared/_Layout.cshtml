@@ -84,23 +84,22 @@
                                             <a class="nav-link" asp-area="" asp-controller="Acceso" asp-action="CerrarSesion">Cerrar Sesion</a>
                                         </nav>
                                     </div>
-
-
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
                                         Catalogo
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
-                                  <a class="nav-link" asp-action="ViewCarrito" asp-controller="Carrito">
-                                      Carrito
-                                  </a>
-                                  <a class="nav-link" asp-action="ViewPedidos" asp-controller="Pedido">
-                                      Pedidos
-                                  </a>
-                                  <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                                      <nav class="sb-sidenav-menu-nested nav">
-                                          <a class="nav-link" asp-action="Catalogo" asp-controller="Productos">Catalogo de Productos</a>
-                                      </nav>
-                                  </div>
+                                      <a class="nav-link" asp-action="ViewCarrito" asp-controller="Carrito">
+                                          Carrito
+                                      </a>
+                                      <a class="nav-link" asp-action="ViewPedidos" asp-controller="Pedido">
+                                          Pedidos
+                                      </a>
+                                      <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
+                                          <nav class="sb-sidenav-menu-nested nav">
+                                              <a class="nav-link" asp-action="Catalogo" asp-controller="Productos">Catálogo de Productos</a>
+                                          </nav>
+                                      </div>
+                                      <a href="@Url.Action("Contacto", "Paginas")" class="nav-link collapsed">Contacto</a>
                                 </nav>
                             </div>
                         </div>

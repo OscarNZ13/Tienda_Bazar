@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Tienda_Bazar.Models;
 
 namespace Tienda_Bazar.Controllers
 {
+
+    [Authorize]
     public class ProductosController : Controller
     {
         private readonly BazarLibreriaContext _context;
@@ -246,5 +243,35 @@ namespace Tienda_Bazar.Controllers
             return View(producto);
         }
 
+        //=============================================[ ZONA DE CATALOGO PARA USUARIOS NO LOGEADOS]=================================================
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Catalogo_USL()
+        {
+            var productosActivos = await _context.Productos
+                .Include(p => p.ImagenesProductos)
+                .Where(p => p.Estado)// Esto es para incluir la imagen vinculada en la table
+                .ToListAsync();
+            return View(productosActivos);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> DetailsCatalogo_USL(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var producto = await _context.Productos
+                .Include(p => p.ImagenesProductos) // Incluir la imagen a la hora de poner details
+                .FirstOrDefaultAsync(m => m.CodigoProducto == id);
+            if (producto == null)
+            {
+                return NotFound();
+            }
+
+            return View(producto);
+        }
     }
 }
