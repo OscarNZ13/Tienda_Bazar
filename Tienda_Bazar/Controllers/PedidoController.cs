@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Tienda_Bazar.Models;
 
@@ -40,7 +41,12 @@ namespace Tienda_Bazar.Controllers
         // GET: Pedido/ViewPedidos
         public async Task<IActionResult> ViewPedidos()
         {
+
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userId = int.Parse(userIdClaim);
+
             var pedidos = await _context.Pedidos
+                .Where(p => p.CodigoUsuario == userId)
                 .Include(p => p.Usuario)
                 .Include(p => p.DetallesPedidos)
                 .ThenInclude(d => d.Producto)

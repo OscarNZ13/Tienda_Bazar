@@ -111,6 +111,17 @@ namespace Tienda_Bazar.Controllers
                 Pedido = pedido
             }).ToList();
 
+            foreach (var item in carritoItems)
+            {
+                var producto = await _appDbContext.Productos.FindAsync(item.CodigoProducto);
+                if (producto != null)
+                {
+                    // Restar los productos comprados en la DB
+                    producto.DisponibilidadInventario -= item.Cantidad;
+                    _appDbContext.Productos.Update(producto);
+                }
+            }
+
             _appDbContext.DetallesPedidos.AddRange(detallesPedido);
             await _appDbContext.SaveChangesAsync();
 
