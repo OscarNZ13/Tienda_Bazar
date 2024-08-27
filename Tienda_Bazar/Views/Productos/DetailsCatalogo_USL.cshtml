@@ -6,68 +6,80 @@
 }
 <div style="height: 100px;"></div> <!-- Espacio vacío de 100px -->
 
-<div class="container">
-    <div class="row">
-        <dl class="row">
-            <dt class="col-sm-5">
-                <h3>Producto</h3>
-            </dt>
-            <dd class="col-sm-10">
-                <p>@Html.DisplayFor(model => model.NombreProducto)</p>
-            </dd>
-            <dt class="col-sm-5">
-                <p>Imagenes</p>
-            </dt>
-            <dd class="col-sm-10">
-                @if (Model.ImagenesProductos != null && Model.ImagenesProductos.Any())
-                {
-                    <div id="carousel-@Model.CodigoProducto" class="carousel slide" data-bs-ride="carousel" style="max-width: 50%;">
-                        <div class="carousel-inner">
-                            @{
-                                var isActive = true;
-                                foreach (var imagenProducto in Model.ImagenesProductos)
-                                {
-                                    var base64Imagen = Convert.ToBase64String(imagenProducto.Imagen);
-                                    var imagenSrc = $"data:image/jpeg;base64,{base64Imagen}";
-                                    <div class="carousel-item @(isActive ? "active" : "")">
-                                        <img class="d-block mx-auto img-fluid" src="@imagenSrc" alt="Imagen del producto">
-                                    </div>
-                                    isActive = false;
-                                }
-                            }
+<div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+        <main>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-7">
+                        <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div class="card-header"><h3 class="text-center font-weight-light my-4">Detalles del Producto</h3></div>
+                            <div class="card-body">
+                                <dl class="row">
+                                    <dt class="col-sm-5">
+                                        <p>Producto:</p>
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        @Html.DisplayFor(model => model.NombreProducto)
+                                    </dd>
+                                    <dt class="col-sm-5">
+                                        <p>Precio:</p>
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        <p>@Model.Precio.ToString("C")</p>
+                                    </dd>
+                                    <dt class="col-sm-5">
+                                        <p>Cantidad en Stock:</p>
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        @Html.DisplayFor(model => model.DisponibilidadInventario)
+                                    </dd>
+                                    <dt class="col-sm-5">
+                                        <p>Imagenes:</p>
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        @if (Model.ImagenesProductos != null && Model.ImagenesProductos.Any())
+                                        {
+                                            <div id="carousel-@Model.CodigoProducto" class="carousel slide" data-bs-ride="carousel" style="max-width: 50%;">
+                                                <div class="carousel-inner">
+                                                    @{
+                                                        var isActive = true;
+                                                        foreach (var imagenProducto in Model.ImagenesProductos)
+                                                        {
+                                                            var base64Imagen = Convert.ToBase64String(imagenProducto.Imagen);
+                                                            var imagenSrc = $"data:image/jpeg;base64,{base64Imagen}";
+                                                            <div class="carousel-item @(isActive ? "active" : "")">
+                                                                <img class="d-block mx-auto img-fluid" src="@imagenSrc" alt="Imagen del producto">
+                                                            </div>
+                                                            isActive = false;
+                                                        }
+                                                    }
+                                                </div>
+                                                <a class="carousel-control-prev" href="#carousel-@Model.CodigoProducto" role="button" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Previous</span>
+                                                </a>
+                                                <a class="carousel-control-next" href="#carousel-@Model.CodigoProducto" role="button" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Next</span>
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <img class="img-fluid" src="path/to/default/image.jpg" alt="Imagen del producto">
+                                        }
+                                    </dd>
+                                </dl>
+
+                                <div class="d-grid gap-2 mb-3">
+                                    <button class="btn btn-danger" type="submit"><a asp-action="Catalogo_USL" style="color:white; text-decoration:none">Regresar</a></button>
+                                </div>
+                            </div>
                         </div>
-                        <a class="carousel-control-prev" href="#carousel-@Model.CodigoProducto" role="button" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carousel-@Model.CodigoProducto" role="button" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </a>
                     </div>
-                }
-                else
-                {
-                    <img class="img-fluid" src="path/to/default/image.jpg" alt="Imagen del producto">
-                }
-            </dd>
-            <div class="col-md-8">
-                <dt class="col-sm-2">
-                    <p>Precio</p>
-                </dt>
-                <dd class="col-sm-10">
-                    <p>@Model.Precio.ToString("C")</p>
-                </dd>
-                <dt class="col-sm-5">
-                    <p>Disponibilidad del producto</p>
-                </dt>
-                <dd class="col-sm-10">
-                    <p>@Model.DisponibilidadInventario</p>
-                </dd>
+                </div>
             </div>
-        </dl>
+        </main>
     </div>
-</div>
-<div>
-    <a asp-action="Catalogo_USL">Regresar al Catalogo</a>
 </div>
