@@ -25,7 +25,7 @@ namespace Tienda_Bazar.Controllers
                                     .Where(r => r.CodigoProducto == CodigoProducto)
                                     .ToListAsync();
 
-            ViewBag.CodigoProducto = CodigoProducto;
+            ViewBag.CodigoProducto = CodigoProducto; //Para guardar el id en la vista
 
             Console.WriteLine($"Producto ID en ViewBag: {ViewBag.CodigoProducto}");
             return View(resenas);

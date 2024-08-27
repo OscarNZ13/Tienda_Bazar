@@ -4,7 +4,7 @@
     ViewData["Title"] = "Catalogo";
 }
 
-<div style="height: 15px;"></div> <!-- Espacio vacío de 100px -->
+<div style="height: 15px;"></div> 
 <h2>Catálogo de Productos</h2>
 <div style="height: 10px;"></div>
 
@@ -54,7 +54,7 @@
                             <a asp-action="ViewResenas" asp-controller="Resena" asp-route-CodigoProducto="@producto.CodigoProducto" class="btn btn-primary me-3">Reseñas</a>
                             <form asp-action="AgregarAlCarrito" asp-controller="Carrito" method="post" style="display: inline;">
                                 <input type="hidden" name="productoId" value="@producto.CodigoProducto" />
-                                <button type="submit" class="btn btn-primary">Agregar al carrito</button>
+                                <button type="submit" class="btn btn-primary" @(producto.DisponibilidadInventario <= 0 ? "disabled" : "")>Agregar al carrito</button>
                             </form>
                         </div>
                     </div>

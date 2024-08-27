@@ -61,7 +61,7 @@ namespace Tienda_Bazar.Controllers
 
             if (producto.DisponibilidadInventario < 0)
             {
-                ModelState.AddModelError("Estado", "No se puede considerar activo a un producto sin disponibilidad");
+                ModelState.AddModelError("Estado", "No se puede ingresar disponibilidad menor a 0");
             }
 
             if (ModelState.IsValid)
@@ -116,6 +116,11 @@ namespace Tienda_Bazar.Controllers
             if (producto.DisponibilidadInventario <= 0 && producto.Estado)
             {
                 ModelState.AddModelError("Estado", "No se puede considerar activo a un producto sin disponibilidad");
+            }
+
+            if (producto.DisponibilidadInventario < 0)
+            {
+                ModelState.AddModelError("Estado", "No se puede ingresar disponibilidad menor a 0");
             }
 
             if (id != producto.CodigoProducto)
@@ -257,7 +262,7 @@ namespace Tienda_Bazar.Controllers
             return View(producto);
         }
 
-        //=============================================[ ZONA DE CATALOGO PARA USUARIOS NO LOGEADOS]=================================================
+        //=============================================[ ZONA DE CATALOGO PARA USUARIOS NO LOGEADOS ]=================================================
 
         [AllowAnonymous]
         public async Task<IActionResult> Catalogo_USL()
