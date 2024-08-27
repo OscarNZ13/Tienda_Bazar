@@ -25,10 +25,9 @@ namespace Tienda_Bazar.Controllers
             var userId = int.Parse(userIdClaim);
             var carritoItems = _appDbContext.CarritoCompras
                                        .Where(c => c.CodigoUsuario == userId)
-                                       .Select(c => new CartItemViewModel
+                                       .Select(c => new CartItemViewModel //Usa el objeto para mostrar todos atributos en una lista
                                        {
                                            CarritoId = c.CodigoCarrito,
-                                           ProductoId = c.CodigoProducto,
                                            ProductoNombre = c.Producto.NombreProducto,
                                            Cantidad = c.Cantidad,
                                            Precio = c.Producto.Precio,
@@ -37,7 +36,7 @@ namespace Tienda_Bazar.Controllers
                                        })
                                        .ToList();
 
-            var carritoViewModel = new CartViewModel
+            var carritoViewModel = new CartViewModel //Asgina el valor de esas variables para los atributos del view model
             {
                 Items = carritoItems,
                 Total = carritoItems.Sum(i => i.Subtotal)
@@ -51,15 +50,15 @@ namespace Tienda_Bazar.Controllers
         {
             Console.WriteLine($"Carrito ID: {carritoId}, Nueva Cantidad: {nuevaCantidad}");
             var carritoItem = await _appDbContext.CarritoCompras
-                                                 .Include(c => c.Producto)
+                                                 .Include(c => c.Producto) //Llama productos para usar el stock
                                                  .FirstOrDefaultAsync(c => c.CodigoCarrito == carritoId);
-            if (carritoItem == null || nuevaCantidad < 1 || nuevaCantidad > carritoItem.Producto.DisponibilidadInventario)
+            if (carritoItem == null || nuevaCantidad < 1 || nuevaCantidad > carritoItem.Producto.DisponibilidadInventario) //Validacion para evitar numeros negativos o pasarse del stock
             {
                 return RedirectToAction("ViewCarrito");
             }
 
             carritoItem.Cantidad = nuevaCantidad;
-            _appDbContext.CarritoCompras.Update(carritoItem);
+            _appDbContext.CarritoCompras.Update(carritoItem); 
             await _appDbContext.SaveChangesAsync();
 
             return RedirectToAction("ViewCarrito");
@@ -77,7 +76,7 @@ namespace Tienda_Bazar.Controllers
                                            .Include(c => c.Producto)
                                            .ToList();
 
-            if (!carritoItems.Any())
+            if (!carritoItems.Any()) //Bandera para evitar que complete la compra si el carro esta vacio
             {
                 return RedirectToAction("ViewCarrito");
             }
@@ -85,10 +84,6 @@ namespace Tienda_Bazar.Controllers
             // Obtener el usuario actual desde la DB
             var usuario = await _appDbContext.Usuario.FindAsync(userId);
 
-            if (usuario == null)
-            {
-                return RedirectToAction("ViewCarrito");
-            }
 
             // Crear pedido
             var pedido = new Pedido
@@ -140,21 +135,16 @@ namespace Tienda_Bazar.Controllers
             var usuario = await _appDbContext.Usuario.FindAsync(userId);
 
             var producto = await _appDbContext.Productos.FindAsync(productoId);
-            if (producto == null)
-            {
-                return NotFound("Producto no encontrado");
-            }
 
-            var carritoItem = await _appDbContext.CarritoCompras
-                                             .FirstOrDefaultAsync(c => c.CodigoUsuario == userId && c.CodigoProducto == productoId);
+            var carritoItem = await _appDbContext.CarritoCompras.FirstOrDefaultAsync(c => c.CodigoUsuario == userId && c.CodigoProducto == productoId);
 
             if (carritoItem != null)
             {
-                carritoItem.Cantidad += cantidad;
+                carritoItem.Cantidad += cantidad; //Si ya esta sube la cantidad
             }
             else
             {
-                carritoItem = new CarritoCompra
+                carritoItem = new CarritoCompra //Como no esta agrega el producto al carrito
                 {
                     CodigoUsuario = userId,
                     CodigoProducto = productoId,
@@ -173,15 +163,9 @@ namespace Tienda_Bazar.Controllers
         [HttpPost]
         public async Task<IActionResult> EliminarDelCarrito(int carritoId)
         {
-            var carritoItem = await _appDbContext.CarritoCompras
-                                                 .FirstOrDefaultAsync(c => c.CodigoCarrito == carritoId);
+            var carritoItem = await _appDbContext.CarritoCompras.FirstOrDefaultAsync(c => c.CodigoCarrito == carritoId); //Busca el producto a eliminar en el carrito
 
-            if (carritoItem == null)
-            {
-                return RedirectToAction("ViewCarrito");
-            }
-
-            _appDbContext.CarritoCompras.Remove(carritoItem);
+            _appDbContext.CarritoCompras.Remove(carritoItem); //Lo elimina
             await _appDbContext.SaveChangesAsync();
 
             return RedirectToAction("ViewCarrito");

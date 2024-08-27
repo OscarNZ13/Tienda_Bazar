@@ -21,21 +21,11 @@ namespace Tienda_Bazar.Controllers
         // GET: Pedido/ViewDetails/5
         public async Task<IActionResult> ViewDetails(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var pedido = await _context.Pedidos
                 .Include(p => p.Usuario)
                 .Include(p => p.DetallesPedidos)
                 .ThenInclude(d => d.Producto)
                 .FirstOrDefaultAsync(m => m.CodigoPedido == id);
-
-            if (pedido == null)
-            {
-                return NotFound();
-            }
 
             return View(pedido);
         }
