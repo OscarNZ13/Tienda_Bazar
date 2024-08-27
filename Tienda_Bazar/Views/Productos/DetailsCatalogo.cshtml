@@ -4,7 +4,6 @@
     ViewData["Title"] = "Detalles del Producto";
 }
 <div style="height: 100px;"></div> <!-- Espacio vacío de 100px -->
-<h1>@Model.NombreProducto</h1>
 
 <div id="layoutAuthentication">
     <div id="layoutAuthentication_content">
@@ -16,31 +15,25 @@
                             <div class="card-header"><h3 class="text-center font-weight-light my-4">Detalles del Producto</h3></div>
                             <div class="card-body">
                                 <dl class="row">
-                                    <dt class="col-sm-2">
+                                    <dt class="col-sm-5">
                                         <p>Producto:</p>
                                     </dt>
                                     <dd class="col-sm-10">
                                         @Html.DisplayFor(model => model.NombreProducto)
                                     </dd>
-                                    <dt class="col-sm-2">
+                                    <dt class="col-sm-5">
                                         <p>Precio:</p>
                                     </dt>
                                     <dd class="col-sm-10">
                                         <p>@Model.Precio.ToString("C")</p>
                                     </dd>
-                                    <dt class="col-sm-2">
+                                    <dt class="col-sm-5">
                                         <p>Cantidad en Stock:</p>
                                     </dt>
                                     <dd class="col-sm-10">
                                         @Html.DisplayFor(model => model.DisponibilidadInventario)
                                     </dd>
-                                    <dt class="col-sm-2">
-                                        <p>Estado:</p>
-                                    </dt>
-                                    <dd class="col-sm-10">
-                                        <p>@(Model.Estado ? "Activo" : "Inactivo")</p>
-                                    </dd>
-                                    <dt class="col-sm-2">
+                                    <dt class="col-sm-5">
                                         <p>Imagenes:</p>
                                     </dt>
                                     <dd class="col-sm-10">
