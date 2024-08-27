@@ -60,14 +60,10 @@
                                     @if (currentRol != "Administrador")
                                     {
                                         <a class="nav-link" asp-route-id="@parsedCurrentUserId" asp-action="Edit_UN" asp-controller="Usuarios">Editar Perfil</a>
-
-                                        <a class="nav-link" asp-area="" asp-controller="Acceso" asp-action="CerrarSesion">Cerrar Sesión</a>
                                     }else{
                                         <a class="nav-link" asp-action="Index" asp-controller="Usuarios">Administración de Usuarios</a>
 
                                         <a class="nav-link" asp-action="Index" asp-controller="Productos">Gestión de Productos</a>
-
-                                        <a class="nav-link" asp-area="" asp-controller="Acceso" asp-action="CerrarSesion">Cerrar Sesión</a>
                                     }
 
                                 </nav>
@@ -97,6 +93,7 @@
                                           </nav>
                                       </div>
                                       <a href="@Url.Action("Contacto", "Paginas")" class="nav-link collapsed">Contacto</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Acceso" asp-action="CerrarSesion">Cerrar Sesión</a>
                                 </nav>
                             </div>
                         </div>
