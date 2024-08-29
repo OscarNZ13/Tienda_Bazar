@@ -238,8 +238,8 @@ namespace Tienda_Bazar.Controllers
         public async Task<IActionResult> Catalogo()
         {
             var productosActivos = await _context.Productos
-                .Include(p => p.ImagenesProductos)
-                .Where(p => p.Estado)// Esto es para incluir la imagen vinculada en la table
+                .Include(p => p.ImagenesProductos)// Esto es para incluir la imagen vinculada en la table
+                .Where(p => p.Estado)
                 .ToListAsync();
             return View(productosActivos);
         }
