@@ -69,9 +69,17 @@
                             } <!-- En otras palabras, por cada imagen... -->
                         </td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.CodigoProducto">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.CodigoProducto">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.CodigoProducto">Delete</a>
+                            <button class="btn btn-warning" type="submit">
+                                <a asp-action="Edit" asp-route-id="@item.CodigoProducto" style="color:white; text-decoration:none">Editar</a> 
+                            </button>
+                            |
+                            <button class="btn btn-primary" type="submit">
+                                <a asp-action="Details" asp-route-id="@item.CodigoProducto" style="color:white; text-decoration:none">Details</a>
+                            </button>
+                            |
+                            <button class="btn btn-danger" type="submit">
+                                <a asp-action="Delete" asp-route-id="@item.CodigoProducto" style="color:white; text-decoration:none">Delete</a>
+                            </button>
                         </td>
                     </tr>
                 }
