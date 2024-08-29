@@ -3,18 +3,26 @@
 @{
     ViewData["Title"] = "Index";
 }
-
+<br />
 <h1 class="mt-5">Gestion de Productos</h1>
 
-<div class="card mb-4">
-    <div class="card-header">
+
+<div class="d-grid gap-2 col-6 mx-auto">
+    <button class="btn btn-success" type="button"><a style="color:white; text-decoration:none" asp-action="Create">Crear nuevo Producto</a></button>
+</div>
+<br />
+
+<div class="card mb-4 bg-dark text-white">
+    <div class="card-header bg-dark text-white">
         <i class="fas fa-table me-1"></i>
         <p>
-            <a asp-action="Create">Create New</a>
+            Productos Registrados
         </p>
     </div>
-    <div class="card-body">
-        <table class="table">
+    <br />
+
+    <div class="card-body bg-dark p-0">
+        <table class="table table-dark table-striped">
             <thead>
                 <tr>
                     <th>
